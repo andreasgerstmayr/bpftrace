@@ -24,6 +24,7 @@ add_compile_options("-Wunreachable-code")
 #add_compile_options("-Wformat=2")
 add_compile_options("-Wstrict-overflow=5")
 add_compile_options("-Wdisabled-optimization")
+add_compile_options("-fPIC")
 
 include(CTest)
 
