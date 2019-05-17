@@ -83,14 +83,13 @@ int bpftrace_run(BPFtrace* bpftrace, const char *cscript) {
   return bpftrace->run(move(bpforc));
 }
 
-int bpftrace_data_cb(const BPFtrace* bpftrace)
+int bpftrace_data_cb(BPFtrace* bpftrace)
 {
-  std::cout << "data_cb " << bpftrace << std::endl;
+  bpftrace->print_maps();
+  return 0;
+
   for(auto &mapmap : bpftrace->maps_)
   {
-      std::cout << "one map" << std::endl;
-
-
     IMap &map = *mapmap.second.get();
     int err;
     if (map.type_.type == bpftrace::Type::hist || map.type_.type == bpftrace::Type::lhist)

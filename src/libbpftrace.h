@@ -3,7 +3,7 @@ using namespace bpftrace;
 extern "C" {
     const BPFtrace* bpftrace_init();
     int bpftrace_run(BPFtrace* bpftrace, const char *cscript);
-    int bpftrace_data_cb(const BPFtrace* bpftraceptr);
+    int bpftrace_data_cb(BPFtrace* bpftraceptr);
 }
 
 static int bpftrace_map_stats(IMap &map);
