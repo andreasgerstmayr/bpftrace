@@ -679,7 +679,6 @@ int BPFtrace::run(std::unique_ptr<BpfOrc> bpforc)
   END_trigger();
   poll_perf_events(epollfd, true);
   special_attached_probes_.clear();
-  std::cerr << "BPFtrace cleanup" << std::endl;
 
   return 0;
 }

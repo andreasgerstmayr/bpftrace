@@ -69,6 +69,7 @@ int bpftrace_run(BPFtrace* bpftrace, const char *cscript) {
   act.sa_handler = [](int) { };
   sigaction(SIGINT, &act, NULL);
 
+  /*
   int num_probes = bpftrace->num_probes();
   if (num_probes == 0)
   {
@@ -79,43 +80,19 @@ int bpftrace_run(BPFtrace* bpftrace, const char *cscript) {
     std::cout << "Attaching " << bpftrace->num_probes() << " probe..." << std::endl;
   else
     std::cout << "Attaching " << bpftrace->num_probes() << " probes..." << std::endl;
+  */
 
   return bpftrace->run(move(bpforc));
 }
 
-int bpftrace_data_cb(BPFtrace* bpftrace)
+int bpftrace_data(BPFtrace* bpftrace, char* str)
 {
-  bpftrace->print_maps();
-  return 0;
+  std::stringstream buffer;
+  std::streambuf *old_sbuf = std::cout.rdbuf();
+  std::cout.rdbuf(buffer.rdbuf());
+  int ret = bpftrace->print_maps();
+  std::cout.rdbuf(old_sbuf);
 
-  for(auto &mapmap : bpftrace->maps_)
-  {
-    IMap &map = *mapmap.second.get();
-    int err;
-    if (map.type_.type == bpftrace::Type::hist || map.type_.type == bpftrace::Type::lhist)
-      err = 0;//print_map_hist(map, 0, 0);
-    else if (map.type_.type == bpftrace::Type::avg || map.type_.type == bpftrace::Type::stats)
-      err = bpftrace_map_stats(map);
-    else
-      err = bpftrace_map(map, 0, 0);
-    std::cout << std::endl;
-
-    if (err)
-      return err;
-  }
-
-  return 0;
-}
-
-static int bpftrace_map_stats(IMap &map)
-{
-  std::cout << "print map stats" << std::endl;
-  return 0;
-}
-
-
-static int bpftrace_map(IMap &map, uint32_t top, uint32_t div)
-{
-  std::cout << "print map" << std::endl;
-  return 0;
+  strncpy(str, buffer.str().c_str(), 10*1024);
+  return ret;
 }
